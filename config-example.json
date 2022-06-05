@@ -1,0 +1,17 @@
+{
+  "listen_port": 8080,
+  "base_url": "http://10.0.2.2:8080/static/",
+  "use_cos": true,
+  "cos":{
+    "secret_id":"your_secret_id",
+    "secret_key":"your_secret_key",
+    "address":"https://douyin-xxxxxxxx.cos.ap-shanghai.myqcloud.com"
+  },
+  "mysql":{
+    "host":"localhost",
+    "port":3306,
+    "user":"dy",
+    "password":"douyin",
+    "database":"simple_demo"
+  }
+}
