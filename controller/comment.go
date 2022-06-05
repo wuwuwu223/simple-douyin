@@ -3,6 +3,10 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"simple-demo/dao"
+	"simple-demo/utils"
+	"strconv"
+	"time"
 )
 
 type CommentListResponse struct {
@@ -17,31 +21,70 @@ type CommentActionResponse struct {
 
 // CommentAction no practical effect, just check if token is valid
 func CommentAction(c *gin.Context) {
-	token := c.Query("token")
+	id := utils.GetUserIdFromJwtToken(c)
 	actionType := c.Query("action_type")
-
-	if user, exist := usersLoginInfo[token]; exist {
-		if actionType == "1" {
-			text := c.Query("comment_text")
-			c.JSON(http.StatusOK, CommentActionResponse{Response: Response{StatusCode: 0},
-				Comment: Comment{
-					Id:         1,
-					User:       user,
-					Content:    text,
-					CreateDate: "05-01",
-				}})
+	videoId := c.Query("video_id")
+	videoIdInt64, _ := strconv.ParseInt(videoId, 10, 64)
+	user, _ := dao.GetUserByID(id)
+	if actionType == "1" {
+		text := c.Query("comment_text")
+		err := dao.AddComment(id, videoIdInt64, text)
+		if err != nil {
+			c.JSON(http.StatusOK, Response{
+				StatusCode: 1,
+				StatusMsg:  err.Error(),
+			})
 			return
 		}
-		c.JSON(http.StatusOK, Response{StatusCode: 0})
-	} else {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+		c.JSON(http.StatusOK, CommentActionResponse{Response: Response{StatusCode: 0},
+			Comment: Comment{
+				Id: 1,
+				User: User{
+					Id:            user.Id,
+					Name:          user.Username,
+					FollowCount:   user.FollowCount,
+					FollowerCount: user.FollowerCount,
+					IsFollow:      user.IsFollow,
+					Avatar:        user.Avatar,
+				},
+				Content:    text,
+				CreateDate: time.Now().Format("01-02"),
+			}})
+		return
 	}
 }
 
 // CommentList all videos have same demo comment list
 func CommentList(c *gin.Context) {
+	videoId := c.Query("video_id")
+	videoIdInt64, _ := strconv.ParseInt(videoId, 10, 64)
+	comments, err := dao.GetComments(videoIdInt64)
+	if err != nil {
+		c.JSON(http.StatusOK, Response{
+			StatusCode: 1,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+	var commentList []Comment
+	for i := 0; i < len(comments); i++ {
+		user, _ := dao.GetUserByID(comments[i].UserID)
+		commentList = append(commentList, Comment{
+			Id: comments[i].Id,
+			User: User{
+				Id:            user.Id,
+				Name:          user.Username,
+				FollowCount:   user.FollowCount,
+				FollowerCount: user.FollowerCount,
+				IsFollow:      user.IsFollow,
+				Avatar:        user.Avatar,
+			},
+			Content:    comments[i].Content,
+			CreateDate: comments[i].CreateDate,
+		})
+	}
 	c.JSON(http.StatusOK, CommentListResponse{
 		Response:    Response{StatusCode: 0},
-		CommentList: DemoComments,
+		CommentList: commentList,
 	})
 }

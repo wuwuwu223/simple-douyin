@@ -4,7 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func init() {
+	//initliazier.InitDB()
+}
 func main() {
+
 	r := gin.Default()
 
 	initRouter(r)
