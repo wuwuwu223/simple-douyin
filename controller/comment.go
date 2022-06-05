@@ -51,6 +51,19 @@ func CommentAction(c *gin.Context) {
 				CreateDate: time.Now().Format("01-02"),
 			}})
 		return
+	} else {
+		commentId := c.Query("comment_id")
+		commentIdInt64, _ := strconv.ParseInt(commentId, 10, 64)
+		err := dao.DeleteComment(id, commentIdInt64)
+		if err != nil {
+			c.JSON(http.StatusOK, Response{
+				StatusCode: 1,
+				StatusMsg:  err.Error(),
+			})
+			return
+		}
+		c.JSON(http.StatusOK, Response{StatusCode: 0})
+		return
 	}
 }
 

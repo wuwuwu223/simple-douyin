@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -57,7 +56,7 @@ func GetUserIdFromToken(tokenString string) int64 {
 func JwtMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.Query("token")
-		fmt.Println(tokenString)
+		//fmt.Println(tokenString)
 		if tokenString == "" {
 			c.JSON(http.StatusOK, gin.H{
 				"Response": model.Response{StatusCode: 1, StatusMsg: "token is empty"},

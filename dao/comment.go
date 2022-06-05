@@ -15,6 +15,11 @@ func AddComment(userId int64, videoId int64, content string) error {
 	return nil
 }
 
+func DeleteComment(userid, commentid int64) error {
+	db.Where("user_id = ? and id = ?", userid, commentid).Delete(&model.Comment{})
+	return nil
+}
+
 //GetComments
 func GetComments(videoId int64) ([]model.Comment, error) {
 	var comments []model.Comment
