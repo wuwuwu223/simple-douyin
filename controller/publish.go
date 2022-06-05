@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"simple-demo/dao"
+	"simple-demo/global"
 	"simple-demo/model"
 	"simple-demo/utils"
 	"strconv"
@@ -31,24 +32,44 @@ func Publish(c *gin.Context) {
 		})
 		return
 	}
+
 	title := c.PostForm("title")
 	filename := filepath.Base(data.Filename)
 	finalName := fmt.Sprintf("%d_%s_%d", id, filename, time.Now().Unix())
 	saveFile := filepath.Join("./public/", finalName)
-	video := &model.Video{
-		UserID:   id,
-		Title:    title,
-		PlayUrl:  "http://10.0.2.2:8080/static/" + finalName,
-		CoverUrl: "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
+	var video *model.Video
+	if !global.Config.UseCos {
+		video = &model.Video{
+			UserID:   id,
+			Title:    title,
+			PlayUrl:  global.Config.BaseUrl + finalName,
+			CoverUrl: "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
+		}
+		if err := c.SaveUploadedFile(data, saveFile); err != nil {
+			c.JSON(http.StatusOK, Response{
+				StatusCode: 1,
+				StatusMsg:  err.Error(),
+			})
+			return
+		}
+	} else {
+		err = utils.UploadVideoToCos(data, finalName)
+		if err != nil {
+			fmt.Println(err.Error())
+			c.JSON(http.StatusOK, Response{
+				StatusCode: 1,
+				StatusMsg:  err.Error(),
+			})
+			return
+		}
+		video = &model.Video{
+			UserID:   id,
+			Title:    title,
+			PlayUrl:  global.Config.Cos.Address + "/" + finalName,
+			CoverUrl: "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
+		}
 	}
 	err = dao.AddVideo(video)
-	if err := c.SaveUploadedFile(data, saveFile); err != nil {
-		c.JSON(http.StatusOK, Response{
-			StatusCode: 1,
-			StatusMsg:  err.Error(),
-		})
-		return
-	}
 
 	c.JSON(http.StatusOK, Response{
 		StatusCode: 0,

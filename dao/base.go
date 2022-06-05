@@ -1,18 +1,20 @@
 package dao
 
 import (
+	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
 	"os"
+	"simple-demo/global"
 	"simple-demo/model"
 	"time"
 )
 
 var db *gorm.DB
 
-func init() {
+func InitDb() {
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer（日志输出的目标，前缀和日志包含的内容——译者注）
 		logger.Config{
@@ -22,8 +24,11 @@ func init() {
 			Colorful:                  false,         // 禁用彩色打印
 		},
 	)
-	Db, err := gorm.Open(mysql.Open("dy:douyin@tcp(127.0.0.1:3306)/simple_demo?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{
-		Logger: newLogger,
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local&interpolateParams=true", global.Config.Mysql.User, global.Config.Mysql.Password, global.Config.Mysql.Host, global.Config.Mysql.Port, global.Config.Mysql.Database)
+	Db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger:                 newLogger,
+		PrepareStmt:            true, //开启缓存
+		SkipDefaultTransaction: true,
 	})
 	if err != nil {
 		panic(err)

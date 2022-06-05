@@ -23,7 +23,7 @@ func FavoriteAction(userid, videoid int64, action_type string) error {
 	if action_type == "1" {
 		return db.Model(&model.UserFavorite{}).Create(&model.UserFavorite{UserId: userid, VideoID: videoid}).Error
 	} else {
-		return db.Model(&model.UserFavorite{}).Delete(&model.UserFavorite{UserId: userid, VideoID: videoid}).Error
+		return db.Model(&model.UserFavorite{}).Where("user_id=? and video_id=?", userid, videoid).Delete(&model.UserFavorite{}).Error
 	}
 }
 

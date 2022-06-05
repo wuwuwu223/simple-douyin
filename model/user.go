@@ -22,11 +22,15 @@ type User struct {
 }
 
 type UserFollow struct {
-	UserId   int64 `json:"user_id,omitempty" gorm:"primaryKey"`
-	FollowId int64 `json:"follow_id,omitempty" gorm:"primaryKey"`
+	UserId    int64          `json:"user_id,omitempty" gorm:"index:idx_user_follow"`
+	FollowId  int64          `json:"follow_id,omitempty" gorm:"index:idx_user_follow"`
+	CreatedAt time.Time      `json:"created_at,omitempty"`
+	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index:idx_user_follow"`
 }
 
 type UserFavorite struct {
-	UserId  int64 `json:"user_id,omitempty" gorm:"primaryKey"`
-	VideoID int64 `json:"video_id,omitempty" gorm:"primaryKey"`
+	UserId    int64          `json:"user_id,omitempty" gorm:"index:idx_user_favorite"`
+	VideoID   int64          `json:"video_id,omitempty" gorm:"index:idx_user_favorite"`
+	CreatedAt time.Time      `json:"created_at,omitempty"`
+	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index:idx_user_favorite"`
 }
