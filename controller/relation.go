@@ -40,7 +40,8 @@ func RelationAction(c *gin.Context) {
 
 // FollowList all users have same follow list
 func FollowList(c *gin.Context) {
-	//id:=utils.GetUserIdFromJwtToken(c)
+	token := c.Query("token")
+	id := utils.GetUserIdFromToken(token)
 	userid := c.Query("user_id")
 	//userid to int64
 	useridInt64, _ := strconv.ParseInt(userid, 10, 64)
@@ -57,7 +58,7 @@ func FollowList(c *gin.Context) {
 			Name:          users[i].Username,
 			FollowCount:   0,
 			FollowerCount: 0,
-			IsFollow:      true,
+			IsFollow:      dao.CheckIfFollow(id, users[i].Id),
 		})
 	}
 	c.JSON(http.StatusOK, UserListResponse{
@@ -70,6 +71,8 @@ func FollowList(c *gin.Context) {
 
 // FollowerList all users have same follower list
 func FollowerList(c *gin.Context) {
+	token := c.Query("token")
+	id := utils.GetUserIdFromToken(token)
 	userid := c.Query("user_id")
 	//userid to int64
 	useridInt64, _ := strconv.ParseInt(userid, 10, 64)
@@ -87,7 +90,7 @@ func FollowerList(c *gin.Context) {
 			Name:          users[i].Username,
 			FollowCount:   users[i].FollowCount,
 			FollowerCount: users[i].FollowerCount,
-			IsFollow:      dao.CheckIfFollow(useridInt64, users[i].Id),
+			IsFollow:      dao.CheckIfFollow(id, users[i].Id),
 		})
 	}
 	c.JSON(http.StatusOK, UserListResponse{

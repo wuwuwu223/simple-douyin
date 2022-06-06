@@ -59,7 +59,7 @@ func JwtMiddleware() gin.HandlerFunc {
 		//fmt.Println(tokenString)
 		if tokenString == "" {
 			c.JSON(http.StatusOK, gin.H{
-				"Response": model.Response{StatusCode: 1, StatusMsg: "token is empty"},
+				"Response": model.Response{StatusCode: 1, StatusMsg: "token不能为空"},
 			})
 			c.Abort()
 			return
@@ -67,7 +67,7 @@ func JwtMiddleware() gin.HandlerFunc {
 		token, err := ParseJwtToken(tokenString)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
-				"Response": model.Response{StatusCode: 1, StatusMsg: "token is invalid"},
+				"Response": model.Response{StatusCode: 1, StatusMsg: "token无效"},
 			})
 			c.Abort()
 			return
@@ -77,7 +77,7 @@ func JwtMiddleware() gin.HandlerFunc {
 			c.Next()
 		} else {
 			c.JSON(http.StatusOK, gin.H{
-				"Response": model.Response{StatusCode: 1, StatusMsg: "token is invalid"},
+				"Response": model.Response{StatusCode: 1, StatusMsg: "token无效"},
 			})
 			c.Abort()
 			return

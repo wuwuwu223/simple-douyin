@@ -38,7 +38,7 @@ func FavoriteAction(userid, videoid int64, action_type string) error {
 
 func GetFavoriteVideoList(userid int64) (videos []*model.Video, err error) {
 	var videoids []int64
-	err = db.Table("user_favorites").Where("user_id = ?", userid).Pluck("video_id", &videoids).Error
+	err = db.Model(&model.UserFavorite{}).Where("user_id = ?", userid).Pluck("video_id", &videoids).Error
 	if err != nil {
 		return nil, err
 	}

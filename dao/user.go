@@ -63,9 +63,9 @@ func RelationAction(id, toid int64, action_type string) (err error) {
 
 func CheckIfFollow(id, toid int64) bool {
 	var userFollow model.UserFollow
-	err := db.Where("user_id = ? and follow_id = ?", id, toid).First(&userFollow).Error
-	if err != nil {
-		return false
+	tx := db.Where("user_id = ? and follow_id = ?", id, toid).First(&userFollow)
+	if tx.RowsAffected > 0 {
+		return true
 	}
-	return true
+	return false
 }
