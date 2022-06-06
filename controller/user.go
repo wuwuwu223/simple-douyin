@@ -36,14 +36,14 @@ func Register(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 	user := &model.User{Username: username, Password: password}
-	err := dao.CreateUser(*user)
+	err := dao.CreateUser(user)
 	if err != nil {
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 1, StatusMsg: "Create user failed"},
 		})
 		return
 	}
-
+	//time.Sleep(time.Second)
 	token, _ := utils.GenerateJwtToken(user.Id)
 	c.JSON(http.StatusOK, UserLoginResponse{
 		Response: Response{StatusCode: 0},

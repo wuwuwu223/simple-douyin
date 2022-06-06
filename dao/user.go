@@ -18,7 +18,7 @@ func GetUserByID(id int64) (user *model.User, err error) {
 	return
 }
 
-func CreateUser(user model.User) (err error) {
+func CreateUser(user *model.User) (err error) {
 	err = db.Create(&user).Error
 	return
 }
