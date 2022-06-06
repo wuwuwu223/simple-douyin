@@ -32,7 +32,6 @@ func Publish(c *gin.Context) {
 		})
 		return
 	}
-
 	title := c.PostForm("title")
 	filename := filepath.Base(data.Filename)
 	finalName := fmt.Sprintf("%d_%s_%d", id, filename, time.Now().Unix())
@@ -45,7 +44,7 @@ func Publish(c *gin.Context) {
 			PlayUrl:  global.Config.BaseUrl + finalName,
 			CoverUrl: "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
 		}
-		if err := c.SaveUploadedFile(data, saveFile); err != nil {
+		if err = c.SaveUploadedFile(data, saveFile); err != nil {
 			c.JSON(http.StatusOK, Response{
 				StatusCode: 1,
 				StatusMsg:  err.Error(),
@@ -66,7 +65,7 @@ func Publish(c *gin.Context) {
 			UserID:   id,
 			Title:    title,
 			PlayUrl:  global.Config.Cos.Address + "/" + finalName,
-			CoverUrl: "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
+			CoverUrl: global.Config.BaseUrl + finalName + ".jpg",
 		}
 	}
 	err = dao.AddVideo(video)

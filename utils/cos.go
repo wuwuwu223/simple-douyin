@@ -3,9 +3,11 @@ package utils
 import (
 	"context"
 	"github.com/tencentyun/cos-go-sdk-v5"
+	"io"
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"os"
 	"simple-demo/global"
 )
 
@@ -33,5 +35,20 @@ func UploadVideoToCos(file *multipart.FileHeader, filename string) (err error) {
 	if err != nil {
 		return
 	}
+
+	opt := &cos.GetSnapshotOptions{
+		Time: 1,
+	}
+	resp, err := c.CI.GetSnapshot(context.Background(), filename, opt)
+	if err != nil {
+		// ERROR
+	}
+
+	fd2, err := os.OpenFile("./public/"+filename+".jpg", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0660)
+	if err != nil {
+		// ERROR
+	}
+	_, err = io.Copy(fd2, resp.Body)
+	fd.Close()
 	return
 }

@@ -9,12 +9,12 @@ import (
 )
 
 func main() {
+	//	utils.WriteJpeg()
 	initliazier.InitConfig()
 	dao.InitDb()
 	r := gin.Default()
 
 	initRouter(r)
-
 	err := r.Run(fmt.Sprintf(":%d", global.Config.ListenPort))
 	if err != nil {
 		fmt.Println(err.Error())
