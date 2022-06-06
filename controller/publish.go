@@ -28,7 +28,7 @@ func Publish(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
-			StatusMsg:  err.Error(),
+			StatusMsg:  "上传文件失败",
 		})
 		return
 	}
@@ -47,17 +47,16 @@ func Publish(c *gin.Context) {
 		if err = c.SaveUploadedFile(data, saveFile); err != nil {
 			c.JSON(http.StatusOK, Response{
 				StatusCode: 1,
-				StatusMsg:  err.Error(),
+				StatusMsg:  "保存文件失败",
 			})
 			return
 		}
 	} else {
 		err = utils.UploadVideoToCos(data, finalName)
 		if err != nil {
-			fmt.Println(err.Error())
 			c.JSON(http.StatusOK, Response{
 				StatusCode: 1,
-				StatusMsg:  err.Error(),
+				StatusMsg:  "上传文件失败",
 			})
 			return
 		}
@@ -72,7 +71,7 @@ func Publish(c *gin.Context) {
 
 	c.JSON(http.StatusOK, Response{
 		StatusCode: 0,
-		StatusMsg:  finalName + " uploaded successfully",
+		StatusMsg:  finalName + "上传成功",
 	})
 }
 
@@ -94,7 +93,7 @@ func PublishList(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
-			StatusMsg:  err.Error(),
+			StatusMsg:  "获取视频列表失败",
 		})
 		return
 	}

@@ -35,7 +35,7 @@ func FavoriteList(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
-			StatusMsg:  err.Error(),
+			StatusMsg:  "获取收藏列表失败",
 		})
 		return
 	}

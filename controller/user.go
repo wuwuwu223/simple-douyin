@@ -35,11 +35,19 @@ type UserResponse struct {
 func Register(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
+	ok := utils.ValidateEmail(username)
+	if !ok {
+		c.JSON(http.StatusOK, UserLoginResponse{
+			Response: Response{StatusCode: 1, StatusMsg: "邮箱格式错误"},
+		})
+		return
+	}
+
 	user := &model.User{Username: username, Password: password}
 	err := dao.CreateUser(user)
 	if err != nil {
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "Create user failed"},
+			Response: Response{StatusCode: 1, StatusMsg: "创建用户失败"},
 		})
 		return
 	}
@@ -60,7 +68,7 @@ func Login(c *gin.Context) {
 	user, err := dao.GetUserByUsername(username)
 	if err != nil {
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
+			Response: Response{StatusCode: 1, StatusMsg: "用户不存在"},
 		})
 		return
 	}
@@ -68,7 +76,7 @@ func Login(c *gin.Context) {
 	//check password
 	if user.Password != password {
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "Password is wrong"},
+			Response: Response{StatusCode: 1, StatusMsg: "密码错误"},
 		})
 		return
 	}
@@ -87,7 +95,7 @@ func UserInfo(c *gin.Context) {
 	user, err := dao.GetUserByID(int64(id.(float64)))
 	if err != nil {
 		c.JSON(http.StatusOK, UserResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
+			Response: Response{StatusCode: 1, StatusMsg: "用户不存在"},
 		})
 		return
 	}

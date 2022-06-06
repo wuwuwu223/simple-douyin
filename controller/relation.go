@@ -22,15 +22,15 @@ func RelationAction(c *gin.Context) {
 	//userid to int64
 	to_user_idInt64, _ := strconv.ParseInt(to_user_id, 10, 64)
 	if id == to_user_idInt64 {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "Cannot follow yourself"})
+		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "不能关注自己"})
 		return
 	}
 	err := dao.RelationAction(id, to_user_idInt64, action_type)
 	if err != nil {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "Relation Action Error"})
+		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "关注操作失败"})
 		return
 	}
-	c.JSON(http.StatusOK, Response{StatusCode: 0, StatusMsg: "Relation Action Success"})
+	c.JSON(http.StatusOK, Response{StatusCode: 0, StatusMsg: "关注操作成功"})
 	//if _, exist := usersLoginInfo[token]; exist {
 	//	c.JSON(http.StatusOK, Response{StatusCode: 0})
 	//} else {
@@ -47,7 +47,7 @@ func FollowList(c *gin.Context) {
 	users, err := dao.GetFollows(useridInt64)
 
 	if err != nil {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "Get Follow List Error"})
+		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "获取关注列表失败"})
 		return
 	}
 	var userlist []User
@@ -77,7 +77,7 @@ func FollowerList(c *gin.Context) {
 
 	if err != nil {
 		fmt.Println(err)
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "Get Follow List Error"})
+		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "获取粉丝列表失败"})
 		return
 	}
 	var userlist []User

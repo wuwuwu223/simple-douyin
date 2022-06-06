@@ -74,7 +74,7 @@ func CommentList(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
-			StatusMsg:  err.Error(),
+			StatusMsg:  "获取评论列表失败",
 		})
 		return
 	}
