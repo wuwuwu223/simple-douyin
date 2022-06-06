@@ -97,7 +97,6 @@ func UserInfo(c *gin.Context) {
 		FollowCount:   user.FollowCount,
 		FollowerCount: user.FollowerCount,
 		IsFollow:      false,
-		Avatar:        user.Avatar,
 	}
 	c.JSON(http.StatusOK, UserResponse{
 		Response: Response{StatusCode: 0},

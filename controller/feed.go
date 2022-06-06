@@ -26,7 +26,7 @@ func Feed(c *gin.Context) {
 	latest_time_int64, _ := strconv.ParseInt(latest_time, 10, 64)
 
 	//parse latest_time to time.Time
-	latest_time_time := time.Unix(latest_time_int64, 0)
+	latest_time_time := time.UnixMilli(latest_time_int64)
 
 	userId := utils.GetUserIdFromToken(token)
 	var videos []*model.Video
@@ -48,7 +48,6 @@ func Feed(c *gin.Context) {
 			FollowCount:   user.FollowCount,
 			FollowerCount: user.FollowerCount,
 			IsFollow:      dao.CheckIfFollow(userId, user.Id),
-			Avatar:        user.Avatar,
 		}
 		video.FavoriteCount = dao.GetFavoriteCount(videos[i].Id)
 		video.IsFavorite = dao.CheckIfFavorite(userId, videos[i].Id)
@@ -59,6 +58,6 @@ func Feed(c *gin.Context) {
 	c.JSON(http.StatusOK, FeedResponse{
 		Response:  Response{StatusCode: 0},
 		VideoList: videoList,
-		NextTime:  time.Now().Unix(),
+		NextTime:  time.Now().UnixMilli(),
 	})
 }

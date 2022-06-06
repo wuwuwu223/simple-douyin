@@ -17,7 +17,6 @@ type User struct {
 	FollowerCount int64          `json:"follower_count,omitempty" gorm:"-"`
 	IsFollow      bool           `json:"is_follow,omitempty" gorm:"-"`
 	FollowCount   int64          `json:"follow_count,omitempty" gorm:"-"`
-	Avatar        string         `json:"avatar,omitempty"`
 	Favorites     []Video        `json:"favorites,omitempty" gorm:"many2many:user_favorites;"`
 }
 
