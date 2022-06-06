@@ -7,7 +7,7 @@
 工程无其他依赖，直接编译运行即可
 
 ```shell
-go build && ./simple-demo
+cp config-example.json config.json && go build && ./simple-demo
 ```
 
 ### 配置文件
