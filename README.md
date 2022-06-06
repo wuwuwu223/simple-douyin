@@ -10,13 +10,27 @@
 go build && ./simple-demo
 ```
 
+### 配置文件
+
+```json
+{
+  "listen_port": 8080, //http监听端口
+  "base_url": "http://10.0.2.2:8080/static/", //静态资源访问地址
+  "use_cos": true, //是否使用cos
+  "cos":{
+    "secret_id":"AKIDDPIwPpesUoqRwxlTkkeBkmsqTwH2rAn3", //cos secret_id
+    "secret_key":"8Dk6jFZP1nWL1B7NbZkpb5KNcP9LQDfq", //cos secret_key
+    "address":"https://douyin-1258365609.cos.ap-shanghai.myqcloud.com" //cos地址
+  },
+  "mysql":{
+    "host":"localhost", //mysql地址
+    "port":3306, //mysql端口
+    "user":"dy", //mysql用户名
+    "password":"douyin", //mysql密码
+    "database":"simple_demo" //mysql数据库名
+  }
+}
+```
+
 ### 功能说明
-
-接口功能不完善，仅作为示例
-
-* 用户登录数据保存在内存中，单次运行过程中有效
-* 视频上传后会保存到本地 public 目录中，访问时用 127.0.0.1:8080/static/video_name 即可
-
-### 测试数据
-
-测试数据写在 demo_data.go 中，用于列表接口的 mock 测试
+基本完成所有功能，使用cos时自动获取视频封面
