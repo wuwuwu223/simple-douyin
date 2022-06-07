@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"simple-demo/dao"
+	"simple-demo/service"
 	"simple-demo/utils"
 	"strconv"
 	"time"
@@ -25,10 +25,10 @@ func CommentAction(c *gin.Context) {
 	actionType := c.Query("action_type")
 	videoId := c.Query("video_id")
 	videoIdInt64, _ := strconv.ParseInt(videoId, 10, 64)
-	user, _ := dao.GetUserByID(id)
+	user, _ := service.GetUserByID(id)
 	if actionType == "1" {
 		text := c.Query("comment_text")
-		err := dao.AddComment(id, videoIdInt64, text)
+		err := service.AddComment(id, videoIdInt64, text)
 		if err != nil {
 			c.JSON(http.StatusOK, Response{
 				StatusCode: 1,
@@ -53,7 +53,7 @@ func CommentAction(c *gin.Context) {
 	} else {
 		commentId := c.Query("comment_id")
 		commentIdInt64, _ := strconv.ParseInt(commentId, 10, 64)
-		err := dao.DeleteComment(id, commentIdInt64)
+		err := service.DeleteComment(id, commentIdInt64)
 		if err != nil {
 			c.JSON(http.StatusOK, Response{
 				StatusCode: 1,
@@ -70,7 +70,7 @@ func CommentAction(c *gin.Context) {
 func CommentList(c *gin.Context) {
 	videoId := c.Query("video_id")
 	videoIdInt64, _ := strconv.ParseInt(videoId, 10, 64)
-	comments, err := dao.GetComments(videoIdInt64)
+	comments, err := service.GetComments(videoIdInt64)
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
@@ -80,7 +80,7 @@ func CommentList(c *gin.Context) {
 	}
 	var commentList []Comment
 	for i := 0; i < len(comments); i++ {
-		user, _ := dao.GetUserByID(comments[i].UserID)
+		user, _ := service.GetUserByID(comments[i].UserID)
 		commentList = append(commentList, Comment{
 			Id: comments[i].Id,
 			User: User{

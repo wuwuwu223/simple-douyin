@@ -3,8 +3,8 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"simple-demo/dao"
 	"simple-demo/model"
+	"simple-demo/service"
 	"simple-demo/utils"
 )
 
@@ -31,7 +31,7 @@ func Register(c *gin.Context) {
 	}
 
 	user := &model.User{Username: username, Password: password}
-	err := dao.CreateUser(user)
+	err := service.CreateUser(user)
 	if err != nil {
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 1, StatusMsg: "创建用户失败"},
@@ -52,7 +52,7 @@ func Login(c *gin.Context) {
 	password := c.Query("password")
 
 	//get user form db
-	user, err := dao.GetUserByUsername(username)
+	user, err := service.GetUserByUsername(username)
 	if err != nil {
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 1, StatusMsg: "用户不存在"},
@@ -79,7 +79,7 @@ func Login(c *gin.Context) {
 
 func UserInfo(c *gin.Context) {
 	id, _ := c.Get("userId")
-	user, err := dao.GetUserByID(int64(id.(float64)))
+	user, err := service.GetUserByID(int64(id.(float64)))
 	if err != nil {
 		c.JSON(http.StatusOK, UserResponse{
 			Response: Response{StatusCode: 1, StatusMsg: "用户不存在"},

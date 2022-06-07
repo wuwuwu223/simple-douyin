@@ -3,15 +3,15 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"simple-demo/dao"
 	"simple-demo/global"
 	"simple-demo/initliazier"
+	"simple-demo/service"
 )
 
 func main() {
 	//	utils.WriteJpeg()
 	initliazier.InitConfig()
-	dao.InitDb()
+	service.InitDb()
 	r := gin.Default()
 
 	initRouter(r)

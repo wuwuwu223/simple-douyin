@@ -5,9 +5,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"path/filepath"
-	"simple-demo/dao"
 	"simple-demo/global"
 	"simple-demo/model"
+	"simple-demo/service"
 	"simple-demo/utils"
 	"strconv"
 	"time"
@@ -67,7 +67,7 @@ func Publish(c *gin.Context) {
 			CoverUrl: global.Config.BaseUrl + finalName + ".jpg",
 		}
 	}
-	err = dao.AddVideo(video)
+	err = service.AddVideo(video)
 
 	c.JSON(http.StatusOK, Response{
 		StatusCode: 0,
@@ -81,7 +81,7 @@ func PublishList(c *gin.Context) {
 	id := utils.GetUserIdFromToken(token)
 	userid := c.Query("user_id")
 	useridInt64, _ := strconv.ParseInt(userid, 10, 64)
-	user, err := dao.GetUserByID(useridInt64)
+	user, err := service.GetUserByID(useridInt64)
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
@@ -89,7 +89,7 @@ func PublishList(c *gin.Context) {
 		})
 		return
 	}
-	videos, err := dao.GetVideoListByUserID(useridInt64)
+	videos, err := service.GetVideoListByUserID(useridInt64)
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
@@ -108,10 +108,10 @@ func PublishList(c *gin.Context) {
 			Name:          user.Username,
 			FollowCount:   user.FollowCount,
 			FollowerCount: user.FollowerCount,
-			IsFollow:      dao.CheckIfFollow(id, user.Id),
+			IsFollow:      service.CheckIfFollow(id, user.Id),
 		}
-		video.FavoriteCount = dao.GetFavoriteCount(videos[i].Id)
-		video.IsFavorite = dao.CheckIfFavorite(id, videos[i].Id)
+		video.FavoriteCount = service.GetFavoriteCount(videos[i].Id)
+		video.IsFavorite = service.CheckIfFavorite(id, videos[i].Id)
 		videolist = append(videolist, video)
 	}
 	c.JSON(http.StatusOK, VideoListResponse{

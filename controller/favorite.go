@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"simple-demo/dao"
+	"simple-demo/service"
 	"simple-demo/utils"
 	"strconv"
 )
@@ -15,7 +15,7 @@ func FavoriteAction(c *gin.Context) {
 	//videoid to int64
 	videoidInt64, _ := strconv.ParseInt(videoid, 10, 64)
 	action_type := c.Query("action_type")
-	err := dao.FavoriteAction(id, videoidInt64, action_type)
+	err := service.FavoriteAction(id, videoidInt64, action_type)
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
@@ -31,7 +31,7 @@ func FavoriteAction(c *gin.Context) {
 // FavoriteList all users have same favorite video list
 func FavoriteList(c *gin.Context) {
 	id := utils.GetUserIdFromJwtToken(c)
-	videos, err := dao.GetFavoriteVideoList(id)
+	videos, err := service.GetFavoriteVideoList(id)
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
@@ -46,8 +46,8 @@ func FavoriteList(c *gin.Context) {
 			Title:         videos[i].Title,
 			PlayUrl:       videos[i].PlayUrl,
 			CoverUrl:      videos[i].CoverUrl,
-			FavoriteCount: dao.GetFavoriteCount(videos[i].Id),
-			IsFavorite:    dao.CheckIfFavorite(id, videos[i].Id),
+			FavoriteCount: service.GetFavoriteCount(videos[i].Id),
+			IsFavorite:    service.CheckIfFavorite(id, videos[i].Id),
 		})
 	}
 

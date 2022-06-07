@@ -3,8 +3,8 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"simple-demo/dao"
 	"simple-demo/model"
+	"simple-demo/service"
 	"simple-demo/utils"
 	"strconv"
 	"time"
@@ -31,9 +31,9 @@ func Feed(c *gin.Context) {
 	userId := utils.GetUserIdFromToken(token)
 	var videos []*model.Video
 	if latest_time != "" {
-		videos, _ = dao.GetVideoListAfterTime(latest_time_time)
+		videos, _ = service.GetVideoListAfterTime(latest_time_time)
 	} else {
-		videos, _ = dao.GetVideoList()
+		videos, _ = service.GetVideoList()
 	}
 	var videoList []Video
 	for i := range videos {
@@ -41,17 +41,17 @@ func Feed(c *gin.Context) {
 		video.Id = videos[i].Id
 		video.PlayUrl = videos[i].PlayUrl
 		video.CoverUrl = videos[i].CoverUrl
-		user, _ := dao.GetUserByID(videos[i].UserID)
+		user, _ := service.GetUserByID(videos[i].UserID)
 		video.Author = User{
 			Id:            user.Id,
 			Name:          user.Username,
 			FollowCount:   user.FollowCount,
 			FollowerCount: user.FollowerCount,
-			IsFollow:      dao.CheckIfFollow(userId, user.Id),
+			IsFollow:      service.CheckIfFollow(userId, user.Id),
 		}
-		video.FavoriteCount = dao.GetFavoriteCount(videos[i].Id)
-		video.IsFavorite = dao.CheckIfFavorite(userId, videos[i].Id)
-		video.CommentCount = dao.GetCommentCount(videos[i].Id)
+		video.FavoriteCount = service.GetFavoriteCount(videos[i].Id)
+		video.IsFavorite = service.CheckIfFavorite(userId, videos[i].Id)
+		video.CommentCount = service.GetCommentCount(videos[i].Id)
 		video.Title = videos[i].Title
 		videoList = append(videoList, video)
 	}
