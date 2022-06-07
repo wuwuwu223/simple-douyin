@@ -12,9 +12,7 @@ func GetUserByUsername(username string) (user *model.User, err error) {
 
 func GetUserByID(id int64) (user *model.User, err error) {
 	user = &model.User{}
-	err = db.Where("id = ?", id).First(&user).Error
-	db.Model(&model.UserFollow{}).Where("user_id=?", id).Count(&user.FollowCount)
-	db.Model(&model.UserFollow{}).Where("follow_id=?", id).Count(&user.FollowerCount)
+	err = db.Where("id = ?", id).Preload("Videos").First(&user).Error
 	return
 }
 
@@ -52,13 +50,13 @@ func GetFollowers(userid int64) (users []*model.User, err error) {
 	return followers, err
 }
 
-func RelationAction(id, toid int64, action_type string) (err error) {
-	if action_type == "1" {
+func RelationAction(id, toid int64, actionType string) (err error) {
+	if actionType == "1" {
 		err = db.Model(&model.UserFollow{}).Create(&model.UserFollow{UserId: id, FollowId: toid}).Error
 	} else {
-		err = db.Model(&model.UserFollow{}).Where("user_id = ? and follow_id = ?", id, toid).Delete(&model.UserFollow{}).Error
+		err = db.Model(&model.UserFollow{}).Where("user_id=? and follow_id=?", id, toid).Delete(&model.UserFollow{UserId: id, FollowId: toid}).Error
 	}
-	return nil
+	return
 }
 
 func CheckIfFollow(id, toid int64) bool {

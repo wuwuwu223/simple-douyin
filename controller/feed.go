@@ -20,18 +20,18 @@ type FeedResponse struct {
 func Feed(c *gin.Context) {
 	//get user id from jwt token
 	token := c.Query("token")
-	latest_time := c.Query("latest_time")
+	latestTime := c.Query("latest_time")
 
 	//parse latest_time to int64
-	latest_time_int64, _ := strconv.ParseInt(latest_time, 10, 64)
+	latestTimeInt64, _ := strconv.ParseInt(latestTime, 10, 64)
 
 	//parse latest_time to time.Time
-	latest_time_time := time.UnixMilli(latest_time_int64)
+	latestTimeTime := time.UnixMilli(latestTimeInt64)
 
 	userId := utils.GetUserIdFromToken(token)
 	var videos []*model.Video
-	if latest_time != "" {
-		videos, _ = service.GetVideoListAfterTime(latest_time_time)
+	if latestTime != "" {
+		videos, _ = service.GetVideoListAfterTime(latestTimeTime)
 	} else {
 		videos, _ = service.GetVideoList()
 	}
@@ -43,15 +43,17 @@ func Feed(c *gin.Context) {
 		video.CoverUrl = videos[i].CoverUrl
 		user, _ := service.GetUserByID(videos[i].UserID)
 		video.Author = User{
-			Id:            user.Id,
-			Name:          user.Username,
-			FollowCount:   user.FollowCount,
-			FollowerCount: user.FollowerCount,
-			IsFollow:      service.CheckIfFollow(userId, user.Id),
+			Id:             user.Id,
+			Name:           user.Username,
+			FollowCount:    user.FollowCount,
+			FollowerCount:  user.FollowerCount,
+			IsFollow:       service.CheckIfFollow(userId, user.Id),
+			FavoriteCount:  user.FavoriteCount,
+			TotalFavorited: user.TotalFavorited,
 		}
-		video.FavoriteCount = service.GetFavoriteCount(videos[i].Id)
+		video.FavoriteCount = videos[i].FavoriteCount
 		video.IsFavorite = service.CheckIfFavorite(userId, videos[i].Id)
-		video.CommentCount = service.GetCommentCount(videos[i].Id)
+		video.CommentCount = videos[i].CommentCount
 		video.Title = videos[i].Title
 		videoList = append(videoList, video)
 	}

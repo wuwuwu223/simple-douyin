@@ -110,7 +110,9 @@ func PublishList(c *gin.Context) {
 			FollowerCount: user.FollowerCount,
 			IsFollow:      service.CheckIfFollow(id, user.Id),
 		}
-		video.FavoriteCount = service.GetFavoriteCount(videos[i].Id)
+		video.Title = videos[i].Title
+		video.CommentCount = videos[i].CommentCount
+		video.FavoriteCount = videos[i].FavoriteCount
 		video.IsFavorite = service.CheckIfFavorite(id, videos[i].Id)
 		videolist = append(videolist, video)
 	}

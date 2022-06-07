@@ -16,7 +16,9 @@ func AddComment(userId int64, videoId int64, content string) error {
 }
 
 func DeleteComment(userid, commentid int64) error {
-	db.Where("user_id = ? and id = ?", userid, commentid).Delete(&model.Comment{})
+	comment := model.Comment{}
+	db.Model(&model.Comment{}).Where("id = ? and user_id = ?", commentid, userid).First(&comment)
+	db.Model(&model.Comment{}).Delete(&comment)
 	return nil
 }
 
@@ -25,10 +27,4 @@ func GetComments(videoId int64) ([]model.Comment, error) {
 	var comments []model.Comment
 	db.Where("video_id = ?", videoId).Find(&comments)
 	return comments, nil
-}
-
-func GetCommentCount(videoId int64) int64 {
-	var count int64
-	db.Model(&model.Comment{}).Where("video_id = ?", videoId).Count(&count)
-	return count
 }

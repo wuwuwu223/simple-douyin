@@ -15,3 +15,27 @@ type Comment struct {
 	Content    string         `json:"content,omitempty"`
 	CreateDate string         `json:"create_date,omitempty"`
 }
+
+func (c *Comment) AfterCreate(tx *gorm.DB) (err error) {
+	video := Video{}
+	if err = tx.Model(&Video{}).Where("id = ?", c.VideoID).First(&video).Error; err != nil {
+		return err
+	}
+	video.CommentCount++
+	if err = tx.Model(&Video{}).Where("id=?", c.VideoID).Update("comment_count", video.CommentCount).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Comment) BeforeDelete(tx *gorm.DB) (err error) {
+	video := Video{}
+	if err = tx.Model(&Video{}).Where("id = ?", c.VideoID).First(&video).Error; err != nil {
+		return err
+	}
+	video.CommentCount++
+	if err = tx.Model(&Video{}).Where("id=?", c.VideoID).Update("comment_count", video.CommentCount).Error; err != nil {
+		return err
+	}
+	return nil
+}

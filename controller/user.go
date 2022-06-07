@@ -87,11 +87,13 @@ func UserInfo(c *gin.Context) {
 		return
 	}
 	userinfo := &User{
-		Id:            user.Id,
-		Name:          user.Username,
-		FollowCount:   user.FollowCount,
-		FollowerCount: user.FollowerCount,
-		IsFollow:      false,
+		Id:             user.Id,
+		Name:           user.Username,
+		FollowCount:    user.FollowCount,
+		FollowerCount:  user.FollowerCount,
+		IsFollow:       false,
+		TotalFavorited: user.TotalFavorited,
+		FavoriteCount:  user.FavoriteCount,
 	}
 	c.JSON(http.StatusOK, UserResponse{
 		Response: Response{StatusCode: 0},

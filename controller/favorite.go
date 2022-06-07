@@ -30,8 +30,10 @@ func FavoriteAction(c *gin.Context) {
 
 // FavoriteList all users have same favorite video list
 func FavoriteList(c *gin.Context) {
-	id := utils.GetUserIdFromJwtToken(c)
-	videos, err := service.GetFavoriteVideoList(id)
+	id := c.Query("user_id")
+	//userid to int64
+	useridInt64, _ := strconv.ParseInt(id, 10, 64)
+	videos, err := service.GetFavoriteVideoList(useridInt64)
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
@@ -46,8 +48,8 @@ func FavoriteList(c *gin.Context) {
 			Title:         videos[i].Title,
 			PlayUrl:       videos[i].PlayUrl,
 			CoverUrl:      videos[i].CoverUrl,
-			FavoriteCount: service.GetFavoriteCount(videos[i].Id),
-			IsFavorite:    service.CheckIfFavorite(id, videos[i].Id),
+			FavoriteCount: videos[i].FavoriteCount,
+			IsFavorite:    service.CheckIfFavorite(useridInt64, videos[i].Id),
 		})
 	}
 
