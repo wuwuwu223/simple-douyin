@@ -38,7 +38,6 @@ func (u *UserFollow) AfterCreate(tx *gorm.DB) (err error) {
 	if err = tx.Model(&User{}).Where("id=?", u.FollowId).Update("follower_count", user.FollowerCount).Error; err != nil {
 		return err
 	}
-
 	user2 := User{}
 	if err = tx.Model(&User{}).Where("id = ?", u.UserId).First(&user2).Error; err != nil {
 		return err

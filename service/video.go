@@ -55,8 +55,3 @@ func CheckIfFavorite(userid, videoid int64) bool {
 	}
 	return true
 }
-
-func GetFavoriteCount(videoid int64) (count int64) {
-	db.Model(&model.UserFavorite{}).Where("video_id = ?", videoid).Count(&count)
-	return
-}

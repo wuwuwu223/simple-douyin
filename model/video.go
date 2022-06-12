@@ -13,4 +13,5 @@ type Video struct {
 	Title         string     `json:"title,omitempty"`
 	FavoriteCount int64      `json:"favorite_count,omitempty"`
 	CommentCount  int64      `json:"comment_count,omitempty"`
+	Comments      []Comment  `json:"comments,omitempty"`
 }

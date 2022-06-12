@@ -29,7 +29,12 @@ func Register(c *gin.Context) {
 		})
 		return
 	}
-
+	if len(password) < 6 {
+		c.JSON(http.StatusOK, UserLoginResponse{
+			Response: Response{StatusCode: 1, StatusMsg: "密码长度不能小于6位"},
+		})
+		return
+	}
 	user := &model.User{Username: username, Password: password}
 	err := service.CreateUser(user)
 	if err != nil {

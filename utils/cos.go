@@ -42,11 +42,13 @@ func UploadVideoToCos(file *multipart.FileHeader, filename string) (err error) {
 	resp, err := c.CI.GetSnapshot(context.Background(), filename, opt)
 	if err != nil {
 		// ERROR
+		return
 	}
 
 	fd2, err := os.OpenFile("./public/"+filename+".jpg", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0660)
 	if err != nil {
 		// ERROR
+		return
 	}
 	_, err = io.Copy(fd2, resp.Body)
 	fd.Close()
