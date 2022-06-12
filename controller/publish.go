@@ -68,7 +68,13 @@ func Publish(c *gin.Context) {
 		}
 	}
 	err = service.AddVideo(video)
-
+	if err != nil {
+		c.JSON(http.StatusOK, Response{
+			StatusCode: 1,
+			StatusMsg:  "发布失败",
+		})
+		return
+	}
 	c.JSON(http.StatusOK, Response{
 		StatusCode: 0,
 		StatusMsg:  finalName + "上传成功",
