@@ -18,13 +18,13 @@ func GetVideoListByUserID(userid int64) (videos []*model.Video, err error) {
 
 //getvideolist
 func GetVideoList() (videos []*model.Video, err error) {
-	err = db.Find(&videos).Error
+	err = db.Order("created_at desc").Find(&videos).Error
 	return
 }
 
 //getvideolist
 func GetVideoListAfterTime(t time.Time) (videos []*model.Video, err error) {
-	err = db.Where("created_at < ?", t).Find(&videos).Error
+	err = db.Where("created_at < ?", t).Order("created_at desc").Find(&videos).Error
 	return
 }
 
